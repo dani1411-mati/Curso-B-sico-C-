@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Primeros pasos en programación</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#eef2f6; --paper:#ffffff; --ink:#14213d; --muted:#5a6b85; --line:#cdd7e4;
+  --accent:#2f5bea; --mark:#ffe066; --ok:#1c8a4f; --bad:#c0392b; --code:#0f1b33; --codefg:#dce8ff;
+}
+@media (prefers-color-scheme: dark){
+  :root{--bg:#0e1524; --paper:#16213a; --ink:#e8eefc; --muted:#9db0d3; --line:#2b3a5c; --accent:#7ea2ff; --mark:#5c4b00; --code:#0a1120;}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.6 "Bricolage Grotesque",system-ui,sans-serif;
+  background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+  background-size:32px 32px;background-attachment:fixed}
+.wrap{max-width:820px;margin:0 auto;padding:0 20px 80px}
+header{padding:64px 0 28px}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);line-height:1.05;margin:0 0 14px;font-weight:800;letter-spacing:-.02em}
+h1 span{background:var(--mark);padding:0 .15em}
+header p{max-width:52ch;color:var(--muted);margin:0}
+nav{position:sticky;top:0;z-index:5;display:flex;gap:8px;flex-wrap:wrap;padding:10px 0;background:var(--bg);border-bottom:1px solid var(--line)}
+nav a{color:var(--ink);text-decoration:none;padding:6px 12px;border:1.5px solid var(--ink);border-radius:999px;font-weight:700;font-size:.9rem}
+nav a:hover,nav a:focus-visible{background:var(--ink);color:var(--bg);outline:none}
+section{background:var(--paper);border:1.5px solid var(--ink);border-radius:6px;padding:26px;margin-top:28px;box-shadow:6px 6px 0 var(--ink)}
+h2{margin:0 0 6px;font-size:1.7rem;letter-spacing:-.01em}
+section>p{max-width:62ch}
+.tip{border-left:4px solid var(--accent);padding:6px 14px;margin:14px 0;color:var(--muted);max-width:62ch}
+code{font-family:"JetBrains Mono",monospace;font-size:.88em;background:var(--mark);padding:1px 5px;border-radius:3px;color:var(--ink)}
+textarea{width:100%;min-height:150px;resize:vertical;background:var(--code);color:var(--codefg);border:0;border-radius:6px 6px 0 0;
+  padding:14px;font:14px/1.6 "JetBrains Mono",monospace;tab-size:2}
+textarea:focus-visible{outline:3px solid var(--accent);outline-offset:-3px}
+.bar{display:flex;gap:8px;align-items:center;background:var(--code);padding:8px 10px}
+button{font:inherit;font-weight:700;cursor:pointer;border:0;border-radius:5px;padding:7px 16px}
+.run{background:var(--mark);color:#14213d}
+.reset{background:transparent;color:var(--codefg);border:1px solid #4a5b80}
+button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.out{margin:0;min-height:52px;padding:12px 14px;background:#08101f;color:#9bf0b8;border-radius:0 0 6px 6px;
+  font:14px/1.6 "JetBrains Mono",monospace;white-space:pre-wrap}
+.out.err{color:#ff9d92}
+.quiz{margin-top:14px}
+.quiz button{display:block;width:100%;text-align:left;margin:6px 0;background:var(--bg);color:var(--ink);border:1.5px solid var(--line)}
+.quiz button:hover{border-color:var(--accent)}
+.quiz button.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 18%,var(--paper))}
+.quiz button.bad{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 18%,var(--paper))}
+.msg{min-height:1.6em;margin:8px 0 0;font-weight:700}
+.msg.ok{color:var(--ok)} .msg.bad{color:var(--bad)}
+.prog{display:flex;align-items:center;gap:10px;margin-top:14px;color:var(--muted);font-weight:700}
+.prog div{flex:1;height:10px;border:1.5px solid var(--ink);border-radius:99px;overflow:hidden}
+.prog i{display:block;height:100%;width:0;background:var(--accent);transition:width .4s}
+footer{margin-top:40px;color:var(--muted);font-size:.9rem}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <h1>Aprende a <span>programar</span> escribiendo código de verdad</h1>
+  <p>Cuatro ideas básicas, un ejemplo editable en cada una y un reto final. Cambia el código, pulsa <b>Ejecutar</b> y mira qué pasa. Equivocarte es parte del proceso.</p>
+  <div class="prog" aria-label="Progreso"><span id="ptxt">0 de 4</span><div><i id="pbar"></i></div></div>
+</header>
+
+<nav aria-label="Lecciones">
+  <a href="#variables">Variables</a><a href="#condicionales">Condicionales</a>
+  <a href="#bucles">Bucles</a><a href="#funciones">Funciones</a><a href="#reto">Reto</a>
+</nav>
+
+<section id="variables">
+  <h2>Variables: cajas con nombre</h2>
+  <p>Una variable guarda un valor para usarlo después. Se crea con <code>let</code> y se muestra con <code>console.log()</code>.</p>
+  <div class="tip">Prueba esto: cambia tu nombre y tu edad, y añade una variable nueva.</div>
+  <div class="ed" data-lesson="0">
+<textarea spellcheck="false" aria-label="Editor de código">let nombre = "Ana";
+let edad = 15;
+console.log("Hola, " + nombre);
+console.log("El próximo año tendrás " + (edad + 1));</textarea>
+    <div class="bar"><button class="run">Ejecutar</button><button class="reset">Restaurar</button></div>
+    <pre class="out" aria-live="polite">Aquí aparecerá el resultado.</pre>
+  </div>
+  <div class="quiz" data-answer="1">
+    <b>¿Qué guarda <code>let precio = 20;</code>?</b>
+    <button>El texto "precio"</button><button>El número 20 en una variable llamada precio</button><button>Una función</button>
+    <p class="msg"></p>
+  </div>
+</section>
+
+<section id="condicionales">
+  <h2>Condicionales: tomar decisiones</h2>
+  <p>Con <code>if</code> el programa elige qué hacer según una condición. Si no se cumple, entra <code>else</code>.</p>
+  <div class="tip">Prueba esto: cambia la temperatura a 35 y luego a 5.</div>
+  <div class="ed" data-lesson="1">
+<textarea spellcheck="false" aria-label="Editor de código">let temperatura = 22;
+
+if (temperatura > 30) {
+  console.log("Hace calor: lleva agua.");
+} else if (temperatura < 10) {
+  console.log("Hace frío: lleva abrigo.");
+} else {
+  console.log("El clima está agradable.");
+}</textarea>
+    <div class="bar"><button class="run">Ejecutar</button><button class="reset">Restaurar</button></div>
+    <pre class="out" aria-live="polite">Aquí aparecerá el resultado.</pre>
+  </div>
+  <div class="quiz" data-answer="2">
+    <b>Si <code>edad = 17</code>, ¿qué imprime <code>if (edad >= 18) {...} else {...}</code>?</b>
+    <button>Lo que hay en el if</button><button>Nada</button><button>Lo que hay en el else</button>
+    <p class="msg"></p>
+  </div>
+</section>
+
+<section id="bucles">
+  <h2>Bucles: repetir sin copiar y pegar</h2>
+  <p>Un bucle <code>for</code> repite instrucciones. Tiene tres partes: dónde empieza, hasta cuándo sigue y cómo avanza.</p>
+  <div class="tip">Prueba esto: cambia el 5 por 10, o muestra la tabla del 7.</div>
+  <div class="ed" data-lesson="2">
+<textarea spellcheck="false" aria-label="Editor de código">for (let i = 1; i <= 5; i++) {
+  console.log("Tabla del 3: 3 x " + i + " = " + 3 * i);
+}</textarea>
+    <div class="bar"><button class="run">Ejecutar</button><button class="reset">Restaurar</button></div>
+    <pre class="out" aria-live="polite">Aquí aparecerá el resultado.</pre>
+  </div>
+  <div class="quiz" data-answer="0">
+    <b>¿Cuántas veces se repite <code>for (let i = 0; i &lt; 3; i++)</code>?</b>
+    <button>3 veces</button><button>2 veces</button><button>Infinitas veces</button>
+    <p class="msg"></p>
+  </div>
+</section>
+
+<section id="funciones">
+  <h2>Funciones: recetas reutilizables</h2>
+  <p>Una función agrupa instrucciones bajo un nombre. Recibe datos (parámetros) y puede devolver un resultado con <code>return</code>.</p>
+  <div class="tip">Prueba esto: crea una función <code>despedir</code> parecida a <code>saludar</code>.</div>
+  <div class="ed" data-lesson="3">
+<textarea spellcheck="false" aria-label="Editor de código">function saludar(nombre) {
+  return "¡Hola, " + nombre + "!";
+}
+
+console.log(saludar("Luis"));
+console.log(saludar("Marta"));</textarea>
+    <div class="bar"><button class="run">Ejecutar</button><button class="reset">Restaurar</button></div>
+    <pre class="out" aria-live="polite">Aquí aparecerá el resultado.</pre>
+  </div>
+  <div class="quiz" data-answer="1">
+    <b>¿Para qué sirve <code>return</code>?</b>
+    <button>Para repetir una función</button><button>Para devolver un resultado a quien llamó la función</button><button>Para crear una variable</button>
+    <p class="msg"></p>
+  </div>
+</section>
+
+<section id="reto">
+  <h2>Reto: la función que dobla</h2>
+  <p>Completa la función <code>doble</code> para que devuelva el número multiplicado por 2. Pulsa <b>Comprobar</b> para probarla con varios valores.</p>
+  <div id="challenge">
+<textarea id="chcode" spellcheck="false" aria-label="Editor del reto">function doble(n) {
+  // escribe tu código aquí
+  return n;
+}</textarea>
+    <div class="bar"><button class="run" id="chk">Comprobar</button></div>
+    <pre class="out" id="chout" aria-live="polite">Todavía sin comprobar.</pre>
+  </div>
+</section>
+
+<footer>Todo el código se ejecuta en tu navegador; no se envía a ningún servidor.</footer>
+</div>
+
+<script>
+// Ejecuta código del usuario y captura console.log
+function run(code){
+  const lines=[];
+  const fake={log:(...a)=>lines.push(a.map(x=>typeof x==="object"?JSON.stringify(x):String(x)).join(" "))};
+  try{ new Function("console",code)(fake); return {ok:true,text:lines.join("\n")||"(el programa no mostró nada; usa console.log)"}; }
+  catch(e){ return {ok:false,text:"Error: "+e.message+"\nRevisa comas, llaves y comillas."}; }
+}
+
+let done=new Set();
+function progress(k){
+  done.add(k);
+  document.getElementById("ptxt").textContent=done.size+" de 4";
+  document.getElementById("pbar").style.width=(done.size/4*100)+"%";
+}
+
+document.querySelectorAll(".ed").forEach(ed=>{
+  const ta=ed.querySelector("textarea"), out=ed.querySelector(".out"), original=ta.value;
+  ed.querySelector(".run").onclick=()=>{
+    const r=run(ta.value);
+    out.textContent=r.text; out.classList.toggle("err",!r.ok);
+    if(r.ok) progress("e"+ed.dataset.lesson);
+  };
+  ed.querySelector(".reset").onclick=()=>{ta.value=original;out.textContent="Código restaurado.";out.classList.remove("err");};
+  ta.addEventListener("keydown",e=>{ // Tab inserta espacios
+    if(e.key==="Tab"){e.preventDefault();const s=ta.selectionStart;ta.setRangeText("  ",s,ta.selectionEnd,"end");}
+  });
+});
+
+document.querySelectorAll(".quiz").forEach(q=>{
+  const btns=[...q.querySelectorAll("button")], msg=q.querySelector(".msg");
+  btns.forEach((b,i)=>b.onclick=()=>{
+    btns.forEach(x=>x.classList.remove("ok","bad"));
+    if(i==q.dataset.answer){b.classList.add("ok");msg.textContent="¡Correcto!";msg.className="msg ok";}
+    else{b.classList.add("bad");msg.textContent="Casi. Vuelve a leer la lección e inténtalo de nuevo.";msg.className="msg bad";}
+  });
+});
+
+document.getElementById("chk").onclick=()=>{
+  const out=document.getElementById("chout");
+  const tests=[[2,4],[10,20],[0,0],[-3,-6]];
+  try{
+    const fn=new Function(document.getElementById("chcode").value+"\nreturn typeof doble==='function'?doble:null;")();
+    if(!fn){out.textContent="No encuentro la función doble. Debe llamarse exactamente así.";out.className="out err";return;}
+    const res=tests.map(([a,b])=>{const r=fn(a);return (r===b?"✔":"✘")+" doble("+a+") devolvió "+r+", esperado "+b;});
+    const pass=res.every(l=>l.startsWith("✔"));
+    out.textContent=res.join("\n")+"\n\n"+(pass?"¡Reto superado! Ya sabes escribir una función.":"Aún no. Pista: usa n * 2.");
+    out.className="out"+(pass?"":" err");
+  }catch(e){out.textContent="Error: "+e.message;out.className="out err";}
+};
+</script>
+</body>
+</html>
